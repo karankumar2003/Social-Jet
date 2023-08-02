@@ -3,18 +3,17 @@ package com.example.socialjet
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.socialjet.auth.SignUpScreen
 import com.example.socialjet.ui.theme.SocialJetTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,26 +28,29 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    SocialJetApp()
 
                 }
             }
         }
     }
+
+
+}
+
+sealed class AppScreens (val route:String){
+    object SignUpScreen : AppScreens("signup")
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun SocialJetApp() {
+    val viewModel = hiltViewModel<MyViewModel>()
+    val navController = rememberNavController()
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    SocialJetTheme {
-        Greeting("Android")
+    NavHost(navController = navController, startDestination = AppScreens.SignUpScreen.route){
+        composable(AppScreens.SignUpScreen.route){
+            SignUpScreen()
+        }
     }
+
 }
